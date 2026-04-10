@@ -5,6 +5,9 @@ import { ChevronDown, Plus, X } from 'lucide-react';
 import { financialApi } from '@/lib/api';
 import { Goal, InvestmentEntry } from '@/lib/store';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 type InvestmentOption = {
   id: string;
   name: string;
