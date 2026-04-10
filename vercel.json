@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "npm install && npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "cd frontend && npm install",
+  "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": "frontend/.next",
   "regions": ["iad1"],
