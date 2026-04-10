@@ -2,17 +2,25 @@
 
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useState } from "react";
 import Image from "next/image";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 
 function LoginContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only access searchParams on client side
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setError(params.get("error"));
+    }
+  }, []);
 
   useEffect(() => {
     if (session) {
