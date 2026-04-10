@@ -1,15 +1,14 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, Suspense, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-function LoginContent() {
+export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -221,14 +220,3 @@ function LoginContent() {
   );
 }
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    }>
-      <LoginContent />
-    </Suspense>
-  );
-}
