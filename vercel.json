@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci --include=dev",
   "framework": "nextjs",
   "env": {
     "NEXT_PUBLIC_API_URL": "@next_public_api_url",
