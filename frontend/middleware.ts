@@ -1,10 +1,4 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-export function middleware(request: NextRequest) {
-  // Temporarily allow all requests to debug the issue
-  return NextResponse.next();
-}
+export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [
@@ -16,5 +10,3 @@ export const config = {
     '/transfers/:path*',
   ],
 };
-
-// Made with Bob
