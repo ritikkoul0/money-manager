@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getSession } from 'next-auth/react';
-import { Transaction, MonthlyAggregate, CategoryAggregate, DailySpending, FinancialSummary, InvestmentEntry, Goal, Bill, SalaryEntry } from './store';
+import { Transaction, MonthlyAggregate, CategoryAggregate, DailySpending, FinancialSummary, FinancialDataPoint, InvestmentEntry, Goal, Bill, SalaryEntry } from './store';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
