@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub as string;
+        (session.user as any).id = token.sub as string;
         if (token.backendId) {
           (session.user as any).backendId = token.backendId;
         }
@@ -79,3 +79,5 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+
+
