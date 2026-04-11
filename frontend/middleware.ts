@@ -9,4 +9,5 @@ export const config = {
     '/salary/:path*',
     '/transfers/:path*',
   ],
+  runtime: 'nodejs',
 };
