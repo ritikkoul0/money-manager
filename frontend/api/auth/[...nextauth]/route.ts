@@ -1,6 +1,17 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
+const deploymentEnvSummary = {
+  NODE_ENV: process.env.NODE_ENV,
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? "set" : "missing",
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? "set" : "missing",
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ? "set" : "missing",
+};
+
+console.log("Deploy env summary:", deploymentEnvSummary);
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
