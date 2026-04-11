@@ -3,68 +3,48 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
-  try {
+  const { pathname } = request.nextUrl;
 
-    const token = await getToken({
-  req: request,
-  secret: process.env.NEXTAUTH_SECRET,
-  salt: process.env.NODE_ENV === 'production' 
-    ? "__Secure-next-auth.session-token" 
-    : "next-auth.session-token",
-});
+  // 1. Get the token
+  // NextAuth automatically uses NEXTAUTH_SECRET from your env
+  const token = await getToken({ 
+    req: request,
+    // We explicitly use the Vercel-provided secret here
+    secret: process.env.NEXTAUTH_SECRET 
+  });
 
-    const isAuthPage = request.nextUrl.pathname === '/login';
-    const isProtectedRoute = [
-      '/',
-      '/goals',
-      '/investments',
-      '/payments',
-      '/salary',
-      '/transfers',
-    ].some(route =>
-      request.nextUrl.pathname === route ||
-      request.nextUrl.pathname.startsWith(`${route}/`)
-    );
+  const isAuthPage = pathname === '/login';
+  
+  // Define protected routes
+  const protectedRoutes = ['/', '/goals', '/investments', '/payments', '/salary', '/transfers'];
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
 
-    // Redirect to login if accessing protected route without token
-    if (isProtectedRoute && !token) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    // Redirect to home if accessing login page with valid token
-    if (isAuthPage && token) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Middleware auth error:', {
-      pathname: request.nextUrl.pathname,
-      hasSecret: Boolean(process.env.NEXTAUTH_SECRET),
-      nextAuthUrl: process.env.NEXTAUTH_URL,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-
-    if (request.nextUrl.pathname === '/login') {
-      return NextResponse.next();
-    }
-
-    return NextResponse.redirect(new URL('/login', request.url));
+  // 2. Logic: Not logged in + trying to access protected route
+  if (isProtectedRoute && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
   }
+
+  // 3. Logic: Logged in + trying to access login page
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    '/',
-    '/goals/:path*',
-    '/investments/:path*',
-    '/payments/:path*',
-    '/salary/:path*',
-    '/transfers/:path*',
-    '/login',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
-
-// Made with Bob
