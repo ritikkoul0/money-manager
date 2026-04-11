@@ -2,26 +2,23 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-// This forces the middleware to run in a way that is compatible 
+// This forces the middleware to run in a way that is compatible
 // with Vercel's Edge environment and prevents __dirname errors.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   try {
-    // 1. Get the token
-    const token = await getToken({ 
+    const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
-      // In production, NextAuth uses secure cookies (prefixed with __Secure-)
-      // Setting secureCookie helps getToken find the right cookie in the Edge environment
       secureCookie: process.env.NODE_ENV === "production",
     });
 
     const isAuthPage = pathname === '/login';
-    
+
     // Define protected routes
     const protectedRoutes = ['/', '/goals', '/investments', '/payments', '/salary', '/transfers'];
-    const isProtectedRoute = protectedRoutes.some(route => 
+    const isProtectedRoute = protectedRoutes.some((route) =>
       pathname === route || pathname.startsWith(`${route}/`)
     );
 
@@ -55,6 +52,6 @@ export const config = {
      * 2. /_next (standard Next.js assets)
      * 3. Static files (images, favicon, etc.)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|_next).*)',
   ],
 };
