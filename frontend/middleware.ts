@@ -4,10 +4,14 @@ import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
   try {
+
     const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET
-    });
+  req: request,
+  secret: process.env.NEXTAUTH_SECRET,
+  salt: process.env.NODE_ENV === 'production' 
+    ? "__Secure-next-auth.session-token" 
+    : "next-auth.session-token",
+});
 
     const isAuthPage = request.nextUrl.pathname === '/login';
     const isProtectedRoute = [
